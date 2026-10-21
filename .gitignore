@@ -53,7 +53,9 @@ venv.bak/
 *.pt
 *.pth
 *.onnx
+*.joblib
 models/checkpoints/
+models/baselines/*.joblib
 !models/README.md
 
 # Large raw datasets (track scripts and documentation, not raw archives)

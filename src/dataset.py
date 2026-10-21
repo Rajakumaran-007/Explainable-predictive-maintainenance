@@ -99,7 +99,7 @@ def build_dataloaders(
             shuffle=True,
             num_workers=num_workers,
             pin_memory=pin_memory,
-            drop_last=False,
+            drop_last=True,
         ),
         "val": DataLoader(
             val_dataset,
