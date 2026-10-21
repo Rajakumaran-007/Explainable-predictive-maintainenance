@@ -1,0 +1,144 @@
+# ==============================================================================
+# Master Configuration: Explainable & Uncertainty-Aware RUL Prediction
+# Hardware Target: Apple Silicon M-Series (MPS Acceleration with CPU Fallback)
+# ==============================================================================
+
+system:
+  device: "mps"  # auto-detected: "mps" if torch.backends.mps.is_available() else "cpu"
+  fallback_device: "cpu"
+  random_seed: 42
+  num_workers: 0  # 0 recommended for macOS MPS to avoid multiprocess IPC overhead
+  log_level: "INFO"
+
+data:
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  dataset_name: "CMAPSSData"
+  default_subset: "FD001"
+  all_subsets: ["FD001", "FD002", "FD003", "FD004"]
+  
+  # C-MAPSS specific columns
+  id_column: "engine_id"
+  cycle_column: "cycle"
+  setting_columns:
+    - "setting_1"
+    - "setting_2"
+    - "setting_3"
+  sensor_columns:
+    - "s_1"
+    - "s_2"
+    - "s_3"
+    - "s_4"
+    - "s_5"
+    - "s_6"
+    - "s_7"
+    - "s_8"
+    - "s_9"
+    - "s_10"
+    - "s_11"
+    - "s_12"
+    - "s_13"
+    - "s_14"
+    - "s_15"
+    - "s_16"
+    - "s_17"
+    - "s_18"
+    - "s_19"
+    - "s_20"
+    - "s_21"
+    
+  # Non-informative invariant sensors (zero variance in FD001)
+  # s_1, s_5, s_10, s_16, s_18, s_19, setting_3
+  drop_constant_sensors: true
+  
+  # Target definition (Heuristic Piecewise-Linear RUL degradation model)
+  # In early cycles, degradation is undetectable. A ceiling (max_rul) stabilizes training.
+  max_rul: 125  # Standard benchmark value (Saxena et al., 2008; Babu et al., 2016)
+  
+  # Window sequence parameters
+  window_size: 50     # Sequence length (investigated: 30, 50, 70)
+  stride: 1           # Step size for sliding window
+  sequence_padding: "edge"  # For test trajectories shorter than window_size
+  
+  # Train / Validation Split protocol
+  # Engine-level split to prevent temporal data leakage across engines
+  val_ratio: 0.20
+  stratify_by: null
+
+models:
+  # Proposed Architecture: 1D-CNN + LSTM Hybrid
+  hybrid_cnn_lstm:
+    conv_filters: [32, 64]
+    kernel_sizes: [5, 3]
+    lstm_hidden_dim: 64
+    lstm_num_layers: 2
+    dropout_prob: 0.2
+    fc_hidden_dims: [64, 32]
+  
+  # Ablation Baseline: LSTM-only
+  lstm_baseline:
+    hidden_dim: 64
+    num_layers: 2
+    dropout_prob: 0.2
+    fc_hidden_dims: [32]
+
+  # Ablation Baseline: 1D-CNN-only
+  cnn_baseline:
+    conv_filters: [32, 64, 128]
+    kernel_sizes: [5, 3, 3]
+    dropout_prob: 0.2
+    fc_hidden_dims: [64, 32]
+
+  # MLP Baseline
+  mlp_baseline:
+    hidden_dims: [128, 64, 32]
+    dropout_prob: 0.2
+
+  # Classical Machine Learning Baselines
+  random_forest:
+    n_estimators: 100
+    max_depth: 15
+    random_state: 42
+    n_jobs: -1
+
+  ridge_regression:
+    alpha: 1.0
+
+training:
+  batch_size: 32      # Evaluated: 16, 32, 64
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  max_epochs: 60
+  early_stopping_patience: 12
+  lr_scheduler:
+    name: "ReduceLROnPlateau"
+    mode: "min"
+    factor: 0.5
+    patience: 5
+    min_lr: 0.00001
+  gradient_clip_val: 1.0
+  checkpoint_dir: "models/checkpoints"
+  save_best_only: true
+
+uncertainty:
+  mc_dropout:
+    num_passes: 50         # Number of stochastic forward passes during inference
+    confidence_level: 0.95  # 95% nominal confidence level
+  conformal_prediction:
+    alpha: 0.10            # 90% marginal coverage target (1 - alpha)
+    calibration_split: 0.5 # Fraction of held-out validation set for calibration
+
+explainability:
+  background_samples: 100   # Baseline reference samples for SHAP / Integrated Gradients
+  test_explain_samples: 10  # Number of representative engines to explain
+  integrated_gradients:
+    n_steps: 50
+    method: "gausslegendre"
+
+evaluation:
+  metrics:
+    - "RMSE"
+    - "MAE"
+    - "R2"
+    - "NASA_SCORE"
+  results_dir: "results"
