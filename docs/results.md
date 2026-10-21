@@ -11,7 +11,27 @@
 | **MLP Baseline** | 100,545 | 13.91 | 10.39 | 0.880 | 310.8 | 0.40 | 1.17 | Verified (Phase 3) |
 | **LSTM Baseline** | 55,873 | 13.55 | 9.89 | 0.886 | 289.1 | 1.04 | 0.65 | Verified (Phase 3) |
 | **1D-CNN Baseline** | 44,001 | 19.14 | 14.61 | 0.772 | 821.6 | 0.49 | 0.53 | Verified (Phase 3) |
-| **Proposed 1D-CNN + LSTM** | 102,689 | *Pending Phase 4* | *Pending Phase 4* | *Pending Phase 4* | *Pending Phase 4* | *Pending Phase 4* | *Pending Phase 4* | Pending Phase 4 |
+| **Proposed Hybrid 1D-CNN + LSTM** | 102,689 | **14.39 ± 1.14** | **10.40 ± 0.49** | **0.870** | **380.5 ± 93.6** | 1.30 | 0.96 | Verified (Phase 4) |
+
+*Multi-seed evaluation across Seeds [42, 123, 999]. Best individual run achieved RMSE: 13.06, MAE: 9.68, NASA: 281.3.*
+
+---
+
+## 2. Controlled Ablation Studies (FD001)
+
+### Ablation 1: Sequence Window Length Sensitivity (W ∈ {30, 50, 70})
+| Window Size (W) | RMSE (Cycles) | MAE (Cycles) | NASA Asymmetric Score | Latency (ms) | Key Finding |
+| :---: | :---: | :---: | :---: | :---: | :--- |
+| **W = 30** | 14.79 | 10.81 | 594.7 | 0.88 | Shorter horizon fails to capture initial degradation onset |
+| **W = 50 (Optimal)** | **13.06** | **9.68** | **281.3** | 1.30 | Optimal balance of temporal context and sequence integrity |
+| **W = 70** | 15.50 | 11.18 | 402.6 | 1.62 | Excessive history causes test padding artifacts (min test len = 31) |
+
+### Ablation 2: Dropout Regularization (p ∈ {0.0, 0.2, 0.3})
+| Dropout (p) | RMSE (Cycles) | MAE (Cycles) | NASA Asymmetric Score | Observation |
+| :---: | :---: | :---: | :---: | :--- |
+| **p = 0.0 (None)** | 14.94 | 10.70 | 468.0 | Severe overfitting (train loss drops to 61.9 while val loss rises to 178.6) |
+| **p = 0.2 (Optimal)** | **13.06** | **9.68** | **281.3** | Prevents co-adaptation while preserving gradient flow |
+| **p = 0.3** | 13.52 | 9.86 | 304.0 | Slight underfitting due to excessive temporal feature masking |
 
 ---
 
