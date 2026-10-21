@@ -1,0 +1,66 @@
+{
+  "global_importance_percentage": {
+    "s_14": 10.731307029724121,
+    "s_12": 8.75552749633789,
+    "s_11": 8.432141304016113,
+    "s_13": 8.33302116394043,
+    "s_2": 8.088889122009277,
+    "s_7": 7.805871963500977,
+    "s_15": 7.194047451019287,
+    "s_9": 6.72999906539917,
+    "s_4": 6.4977827072143555,
+    "s_21": 6.323135852813721,
+    "s_3": 6.164353370666504,
+    "s_8": 5.179289817810059,
+    "s_17": 4.9060163497924805,
+    "s_20": 4.858617305755615
+  },
+  "top_predictive_sensors": {
+    "s_14": "Corrected Core Speed (Nc_corr)",
+    "s_12": "Fuel Flow Ratio (Wf/Ps30)",
+    "s_11": "HPC Outlet Static Pressure (Ps30)"
+  },
+  "case_studies": {
+    "healthy_engine": {
+      "engine_id": 25,
+      "ground_truth_rul": 125.0,
+      "local_attributions": {
+        "s_2": 15.225830078125,
+        "s_3": 1.1078006029129028,
+        "s_4": 6.460496425628662,
+        "s_7": -1.0137289762496948,
+        "s_8": -0.9141281247138977,
+        "s_9": -3.259939670562744,
+        "s_11": 8.622798919677734,
+        "s_12": -22.682954788208008,
+        "s_13": 2.5812668800354004,
+        "s_14": 21.482316970825195,
+        "s_15": 14.720619201660156,
+        "s_17": -4.621297836303711,
+        "s_20": 2.2509686946868896,
+        "s_21": -4.036240100860596
+      }
+    },
+    "degraded_engine": {
+      "engine_id": 34,
+      "ground_truth_rul": 7.0,
+      "local_attributions": {
+        "s_2": -11.348760604858398,
+        "s_3": -4.117979526519775,
+        "s_4": -12.661747932434082,
+        "s_7": -7.835147857666016,
+        "s_8": -7.972238540649414,
+        "s_9": 0.5443787574768066,
+        "s_11": -13.157857894897461,
+        "s_12": -6.202414035797119,
+        "s_13": -18.78254508972168,
+        "s_14": 10.7919340133667,
+        "s_15": 1.2600934505462646,
+        "s_17": -1.7690424919128418,
+        "s_20": -6.143302917480469,
+        "s_21": 2.339545488357544
+      }
+    }
+  },
+  "causality_boundary_note": "Feature attributions computed via Integrated Gradients measure gradient-path model sensitivity (d f / d x_i) within the operational distribution. While these attributions correlate strongly with known thermo-mechanical wear phenomena (e.g. exhaust gas temperature and bleed enthalpy escalation), mathematical attribution does not constitute formal proof of physical failure causality in the absence of explicit structural causal models."
+}
