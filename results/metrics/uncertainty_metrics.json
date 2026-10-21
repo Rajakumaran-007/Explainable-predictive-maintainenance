@@ -1,0 +1,42 @@
+{
+  "mc_dropout": {
+    "num_passes": 50,
+    "mean_epistemic_std": 4.376326560974121,
+    "min_epistemic_std": 0.46269893646240234,
+    "max_epistemic_std": 8.422866821289062,
+    "gaussian_95_coverage_pct": 48.0,
+    "gaussian_95_mean_width": 17.155200958251953
+  },
+  "conformal_prediction_adaptive_90": {
+    "nominal_coverage_pct": 90.0,
+    "empirical_coverage_pct": 89.0,
+    "mean_interval_width": 49.42658996582031,
+    "min_interval_width": 5.22576904296875,
+    "max_interval_width": 95.1285400390625,
+    "q_hat": 5.647039413452148
+  },
+  "conformal_prediction_homoscedastic_90": {
+    "nominal_coverage_pct": 90.0,
+    "empirical_coverage_pct": 82.0,
+    "mean_interval_width": 40.940956115722656,
+    "q_hat": 21.123703002929688
+  },
+  "error_uncertainty_correlation": {
+    "pearson_r": 0.33427631855010986,
+    "spearman_rho": 0.4021242124212421
+  },
+  "calibration_curve": {
+    "nominal_levels": [
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "empirical_coverages": [
+      83.0,
+      88.0,
+      89.0,
+      93.0
+    ]
+  }
+}
