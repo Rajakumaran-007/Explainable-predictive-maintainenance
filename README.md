@@ -185,8 +185,8 @@ predictive-maintenance-xai/
 
 ### Step 1: Clone Repository & Create Virtual Environment
 ```bash
-git clone https://github.com/rajakumaran/predictive-maintenance-xai.git
-cd predictive-maintenance-xai
+git clone https://github.com/Rajakumaran-007/Explainable-predictive-maintainenance.git
+cd Explainable-predictive-maintainenance
 
 # Create virtual environment (Python 3.11 recommended)
 uv venv .venv --python 3.11
