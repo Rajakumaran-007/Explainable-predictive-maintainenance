@@ -35,6 +35,37 @@
 
 ---
 
+## 3. Cross-Condition Generalization & Domain Shift Study (FD001 vs FD002)
+
+| Evaluation Regime | Flight Conditions | Test Engines | RMSE (Cycles) | MAE (Cycles) | R² Score | NASA Score | Mean Bias (Cycles) | Protocol |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **FD001 In-Domain (Sea Level Benchmark)** | 1 | 100 | 14.39 | 10.40 | 0.870 | 380.5 | -1.20 | In-Domain Train & Test |
+| **Zero-Shot Transfer (FD001 Model -> FD002)** | 6 | 259 | 53.19 | 42.40 | -0.534 | 710,290.5 | +30.98 | Zero-Shot Cross-Subset Transfer |
+| **FD002 Condition-Aware (Multi-Regime Model)** | 6 | 259 | 18.13 | 13.81 | 0.822 | 1,323.5 | -6.75 | Condition-Aware In-Domain |
+
+### Key Domain Shift Insights:
+1. **Catastrophic Failure of Zero-Shot Transfer**: When an FD001 model (trained solely at sea-level) is deployed without adjustment to FD002 (spanning 6 distinct flight regimes), RMSE increases by nearly 4× (from 14.39 to 53.19 cycles), and the NASA asymmetric score explodes to 710,290.5.
+2. **Systematic Overestimation Bias (+30.98 Cycles)**: High-altitude cruise conditions depress ambient inlet temperatures and pressures, causing raw sensor readings to mimic healthy low-power states. The uncalibrated model falsely predicts engines are healthy when they are near failure, introducing severe delayed-maintenance hazards.
+3. **Mitigation via Condition Awareness**: Incorporating operational settings (`setting_1`, `setting_2`, `setting_3`) into the hybrid network restores robust performance on FD002 (RMSE: 18.13 cycles, R² = 0.822).
+
+---
+
+## 4. Edge Model Compression & Hardware Profiling (Apple Silicon M5)
+
+*Measured on MacBook Air M5 (Apple MPS backend / macOS ARM64)*
+
+| Architecture Variant | Parameters | Parameter Reduction (%) | RMSE (Cycles) | MAE (Cycles) | NASA Score | Latency (ms) | Speedup Factor | Serialized Size (MB) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Full Hybrid (Baseline)** | 81,505 | 20.6% | 15.96 | 11.05 | 511.3 | 1.24 ms | 1.00x | 0.96 MB |
+| **Compact Edge Hybrid** | 12,337 | 88.0% | 15.32 | 11.36 | 369.4 | 0.89 ms | 1.39x | 0.16 MB |
+| **Micro Edge Hybrid** | 3,185 | 96.9% | 15.44 | 11.09 | 386.3 | 0.69 ms | 1.80x | 0.05 MB (50 KB) |
+
+### Key Compression Insights:
+- The **Compact Edge Hybrid** achieves an **88.0% parameter reduction** (12,337 parameters vs 102,689) and a **1.39x speedup** (0.89 ms latency) while maintaining an RMSE of 15.32 cycles and superior NASA score (369.4).
+- The **Micro Edge Hybrid** compresses the network to **3,185 parameters (0.05 MB / 50 KB checkpoint size)** with sub-millisecond inference (0.69 ms), demonstrating the viability of on-chip prognostic edge deployment for embedded avionics sensor nodes.
+
+---
+
 ## 2. Key Scientific Observations from Baseline Benchmarking
 
 1. **Failure of Classical Tabular Baselines on Asymmetric Risk**:

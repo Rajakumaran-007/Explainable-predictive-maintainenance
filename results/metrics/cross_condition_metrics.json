@@ -1,0 +1,32 @@
+{
+  "FD001 In-Domain (Sea Level Benchmark)": {
+    "conditions": 1,
+    "test_engines": 100,
+    "RMSE": 14.39,
+    "MAE": 10.4,
+    "R2": 0.87,
+    "NASA_SCORE": 380.5,
+    "mean_bias": -1.2,
+    "protocol": "In-Domain Train & Test"
+  },
+  "Zero-Shot Transfer (FD001 Model -> FD002)": {
+    "conditions": 6,
+    "test_engines": 259,
+    "RMSE": 53.18989944458008,
+    "MAE": 42.39761734008789,
+    "R2": -0.5344365835189819,
+    "NASA_SCORE": 710290.5,
+    "mean_bias": 30.98380470275879,
+    "protocol": "Zero-Shot Cross-Subset Transfer"
+  },
+  "FD002 Condition-Aware (Multi-Regime Model)": {
+    "conditions": 6,
+    "test_engines": 259,
+    "RMSE": 18.12824058532715,
+    "MAE": 13.806103706359863,
+    "R2": 0.8217613399028778,
+    "NASA_SCORE": 1323.47509765625,
+    "mean_bias": -6.748812198638916,
+    "protocol": "Condition-Aware In-Domain"
+  }
+}
