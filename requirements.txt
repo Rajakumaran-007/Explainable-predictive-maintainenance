@@ -16,6 +16,7 @@ plotly>=5.18.0
 streamlit>=1.32.0
 
 # Utilities & Configuration
+pyarrow<18
 pyyaml>=6.0.1
 tqdm>=4.66.0
 requests>=2.31.0
